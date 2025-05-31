@@ -7,6 +7,7 @@ interface Options {
   password: string,
   localPath: string,
   remotePath: string,
+  uploadFileName: string
 }
 const autoUpload = (options: Options) => {
   return {
@@ -28,7 +29,7 @@ const autoUpload = (options: Options) => {
           console.log(chalk.bgRed(`Upload Failed: ${error}`))
         })
         await client.end();
-        await Decompression(client)
+        await Decompression(client, options)
         console.log(chalk.bgGreen("Connect Closed"))
       }
     },
@@ -41,10 +42,7 @@ const Decompression = (conn: any, options: Options) => {
         stream.end(
             `
              cd ${options.remotePath}
-             mv ../www/wwwroot/vuedist bak/vuedist.$(date "+%Y%m%d%H%M%")
-             tar zxvf dist.tar.gz
-             mv dist ../www/wwwroot/vuedist
-             rm -rf dist.tar.gz
+             tar zxvf ${options.uploadFileName}
              exit
             `
         ).on('data',(data: any) =>{
