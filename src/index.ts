@@ -19,8 +19,8 @@ const autoUpload = (options: Options) => {
         var client = new Client();
         await client.connect(options).then(() => {
           console.log(chalk.blue(`Connect Successful！！！`))
-        }).catch(() => {
-          console.log(chalk.red(`Connect Failed`))
+        }).catch((error: Error) => {
+          console.log(chalk.red(`Connect Failed: ${error}`))
         })
         console.log(chalk.bgYellow(`Upload Starting...`))
         await client.uploadDir(options.localPath, options.remotePath).then((resolve: any) => {
