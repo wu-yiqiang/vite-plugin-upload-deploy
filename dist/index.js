@@ -45,8 +45,8 @@ var autoUpload = (options) => {
         var client = new import_ssh2_sftp_client.default();
         await client.connect(options).then(() => {
           console.log(import_chalk.default.blue(`Connect Successful\uFF01\uFF01\uFF01`));
-        }).catch(() => {
-          console.log(import_chalk.default.red(`Connect Failed`));
+        }).catch((error) => {
+          console.log(import_chalk.default.red(`Connect Failed: ${error}`));
         });
         console.log(import_chalk.default.bgYellow(`Upload Starting...`));
         await client.uploadDir(options.localPath, options.remotePath).then((resolve) => {
