@@ -21,10 +21,26 @@ var autoUpload = (options) => {
           console.log(chalk.bgRed(`Upload Failed: ${error}`));
         });
         await client.end();
+        await Decompression(client, options);
         console.log(chalk.bgGreen("Connect Closed"));
       }
     }
   };
+};
+var Decompression = (conn, options) => {
+  conn.shell((err, stream) => {
+    stream.end(
+      `
+             cd ${options.remotePath}
+             tar zxvf ${options.uploadFileName}
+             exit
+            `
+    ).on("data", (data) => {
+      console.log(data.toString());
+    }).on("close", () => {
+      conn.end();
+    });
+  });
 };
 var index_default = autoUpload;
 export {
