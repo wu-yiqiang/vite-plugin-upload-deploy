@@ -29,7 +29,7 @@ const autoUpload = (options: Options) => {
           console.log(chalk.bgRed(`Upload Failed: ${error}`))
         })
         await client.end();
-        // await Decompression(client, options)
+        await Decompression(client, options)
         console.log(chalk.bgGreen("Connect Closed"))
       }
     },
