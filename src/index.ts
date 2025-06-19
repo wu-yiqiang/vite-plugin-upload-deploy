@@ -12,7 +12,7 @@ interface Options {
   isNeedUzip: boolean = true
 }
 
-const isZipFile = (path: string): boolean => {
+const checkZipFile = (path: string): boolean => {
   if (path.includes('.zip')) return  true
   return  false
 }
@@ -20,7 +20,7 @@ const autoUpload = (options: Options) => {
   let isFile = false
   const stats = fs.statSync(options?.localPath);
   if (stats.isFile()) isFile = true
-  const isZipFile = isZipFile(options?.localPath)
+  const isZipFile = checkZipFile(options?.localPath)
   const isNeedUzip = isZipFile && options.isNeedUzip
   return {
     name: 'vite-plugin-auto-upload',
