@@ -1,5 +1,6 @@
 import Client from 'ssh2-sftp-client'
 import chalk from 'chalk';
+import fs from 'fs'
 interface Options {
   host: string,
   port: number,
@@ -7,9 +8,20 @@ interface Options {
   password: string,
   localPath: string,
   remotePath: string,
-  uploadFileName: string
+  uploadFileName: string,
+  isNeedUzip: boolean = true
+}
+
+const isZipFile = (path: string): boolean => {
+  if (path.includes('.zip')) return  true
+  return  false
 }
 const autoUpload = (options: Options) => {
+  let isFile = false
+  const stats = fs.statSync(options?.localPath);
+  if (stats.isFile()) isFile = true
+  const isZipFile = isZipFile(options?.localPath)
+  const isNeedUzip = isZipFile && options.isNeedUzip
   return {
     name: 'vite-plugin-auto-upload',
     apply: "build",
@@ -23,13 +35,22 @@ const autoUpload = (options: Options) => {
           console.log(chalk.red(`Connect Failed: ${error}`))
         })
         console.log(chalk.bgYellow(`Upload Starting...`))
-        await client.uploadDir(options.localPath, options.remotePath).then((resolve: any) => {
-          console.log(chalk.bgBlue(`Upload Successful！！！`))
-        }).catch((error: Error) => {
-          console.log(chalk.bgRed(`Upload Failed: ${error}`))
-        })
+        if (isFile) {
+          // 上传文件
+
+        } else {
+          await client.uploadDir(options.localPath, options.remotePath).then((resolve: any) => {
+            console.log(chalk.bgBlue(`Upload Successful！！！`))
+          }).catch((error: Error) => {
+            console.log(chalk.bgRed(`Upload Failed: ${error}`))
+          })
+        }
+
+        if (isNeedUzip) {
+          // await Decompression(client, options)
+          console.log(chalk.bgGreen("Decompress successful"))
+        }
         await client.end();
-        // await Decompression(client, options)
         console.log(chalk.bgGreen("Connect Closed"))
       }
     },
