@@ -9,7 +9,7 @@ interface Options {
   localPath: string,
   remotePath: string,
   uploadFileName: string,
-  isNeedUzip: boolean = true
+  isNeedUzip: boolean
 }
 
 const checkZipFile = (path: string): boolean => {
@@ -37,7 +37,7 @@ const autoUpload = (options: Options) => {
         console.log(chalk.bgYellow(`Upload Starting...`))
         if (isFile) {
           // 上传文件
-
+          
         } else {
           await client.uploadDir(options.localPath, options.remotePath).then((resolve: any) => {
             console.log(chalk.bgBlue(`Upload Successful！！！`))
